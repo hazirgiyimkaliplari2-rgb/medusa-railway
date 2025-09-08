@@ -1,4 +1,7 @@
 node_modules/
-.yarn/
-yarn.lock
 .git/
+.env
+.env.test
+*.log
+dist/
+.DS_Store
