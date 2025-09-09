@@ -16,11 +16,11 @@ RUN yarn install
 # Copy application files
 COPY . .
 
-# Build the application
+# Build the application (includes admin panel)
 RUN yarn build
 
 # Expose port
 EXPOSE 9000
 
-# Run migrations and start the application
-CMD ["sh", "-c", "yarn migrate && yarn start"]
+# Start the application (serves both API and admin panel)
+CMD ["yarn", "start"]
