@@ -19,9 +19,8 @@ COPY . .
 # Make scripts executable
 RUN chmod +x scripts/start.sh scripts/start-api-only.sh
 
-# Try to build admin panel during Docker build (may fail, will retry at runtime)
-RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build || \
-    echo "Admin panel build failed during Docker build, will retry at runtime"
+# Don't build during Docker - will build at runtime
+# This ensures the build happens with the correct environment variables
 
 EXPOSE 9000
 
