@@ -14,11 +14,10 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
-  // Allow disabling admin for API-only deployments
+  // Admin panel configuration
   admin: {
-    disable:
-      process.env.MEDUSA_ADMIN_DISABLED === "true" ||
-      process.env.API_ONLY === "true" ||
-      false,
+    disable: process.env.MEDUSA_ADMIN_DISABLED === "true" || false,
+    path: "app",
+    outDir: ".medusa/server/public",
   },
 })
