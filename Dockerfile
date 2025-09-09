@@ -43,7 +43,8 @@ COPY . .
 COPY --from=builder /app/.medusa /app/.medusa
 
 # Verify admin panel exists
-RUN ls -la .medusa/server/public/admin/index.html
+RUN ls -la .medusa/server/public/admin/index.html && \
+    echo "Admin panel verification complete"
 
 EXPOSE 9000
 
