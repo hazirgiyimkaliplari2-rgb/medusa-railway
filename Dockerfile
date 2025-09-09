@@ -11,7 +11,7 @@ COPY package*.json ./
 COPY yarn.lock ./
 
 # Install ALL dependencies (including devDependencies for build)
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 # Copy all source files
 COPY . .
@@ -33,7 +33,7 @@ COPY package*.json ./
 COPY yarn.lock ./
 
 # Install production dependencies only
-RUN yarn install --production --frozen-lockfile
+RUN yarn install --production
 
 # Copy application source
 COPY . .
