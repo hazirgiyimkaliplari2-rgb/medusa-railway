@@ -28,6 +28,6 @@ else
     echo "Admin panel exists at .medusa/server/public/admin/index.html"
 fi
 
-# Start the application - USE medusa start DIRECTLY, NOT yarn start!
+# Start the application - USE npx medusa start to use local version!
 echo "Starting Medusa server..."
-exec medusa start
+exec npx medusa start
