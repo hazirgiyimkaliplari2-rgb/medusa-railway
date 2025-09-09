@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "Starting Medusa API (without admin panel)..."
+echo "Starting Medusa API..."
 
-# Start Medusa without admin panel
-exec npx medusa start --no-admin
+# Start Medusa directly - v2 doesn't have --no-admin flag
+exec npx medusa start
