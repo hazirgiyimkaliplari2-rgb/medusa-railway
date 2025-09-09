@@ -22,5 +22,5 @@ RUN yarn build
 # Expose port
 EXPOSE 9000
 
-# Start the application
-CMD ["yarn", "start"]
+# Run migrations and start the application
+CMD ["sh", "-c", "yarn migrate && yarn start"]
