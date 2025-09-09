@@ -15,7 +15,8 @@
   "scripts": {
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
-    "start": "./scripts/start.sh",
+    "start": "./scripts/start-api-only.sh",
+    "start:with-admin": "./scripts/start.sh",
     "dev": "medusa develop",
     "db:migrate": "medusa db:migrate",
     "db:generate": "medusa db:generate",
