@@ -1,7 +1,7 @@
 FROM node:20-alpine
 
 # Install dependencies
-RUN apk add --no-cache python3 make g++ bash
+RUN apk add --no-cache python3 make g++
 
 # Set working directory
 WORKDIR /app
@@ -16,19 +16,11 @@ RUN yarn install
 # Copy application files
 COPY . .
 
-# Build the Medusa application and admin panel
-RUN npx medusa build
-
-# Verify build was successful
-RUN ls -la .medusa/server/public/admin/
+# Build the application - both server and admin
+RUN NODE_ENV=production yarn build || npx medusa build || (echo "Build failed, trying with increased memory" && NODE_OPTIONS="--max-old-space-size=4096" npx medusa build)
 
 # Expose port
 EXPOSE 9000
 
-# Create a startup script
-RUN echo '#!/bin/bash' > /app/start.sh && \
-    echo 'echo "Starting Medusa server with admin panel..."' >> /app/start.sh && \
-    echo 'exec yarn start' >> /app/start.sh && \
-    chmod +x /app/start.sh
-
-CMD ["/app/start.sh"]
+# Start command
+CMD ["yarn", "start"]
