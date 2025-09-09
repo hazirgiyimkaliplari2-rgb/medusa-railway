@@ -16,9 +16,14 @@ RUN yarn install
 # Copy all source files
 COPY . .
 
-# Make build script executable and run it
-RUN chmod +x scripts/docker-build.sh && \
-    NODE_OPTIONS="--max-old-space-size=4096" ./scripts/docker-build.sh
+# Build the application with admin panel
+RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build && \
+    ls -la .medusa/server/public/admin/ || \
+    (echo "Build failed, retrying..." && NODE_OPTIONS="--max-old-space-size=4096" yarn build) && \
+    if [ ! -f ".medusa/server/public/admin/index.html" ]; then \
+        echo "ERROR: Admin panel build failed!" && exit 1; \
+    fi && \
+    echo "Admin panel built successfully!"
 
 # Runtime stage
 FROM node:20-alpine
@@ -42,8 +47,14 @@ COPY . .
 COPY --from=builder /app/.medusa /app/.medusa
 
 # Verify admin panel exists
-RUN ls -la .medusa/server/public/admin/index.html && \
-    echo "Admin panel verification complete"
+RUN if [ -f ".medusa/server/public/admin/index.html" ]; then \
+        echo "Admin panel verified successfully"; \
+        ls -la .medusa/server/public/admin/; \
+    else \
+        echo "ERROR: Admin panel not found in runtime image!"; \
+        ls -la .medusa/server/public/ || echo "Public directory not found"; \
+        exit 1; \
+    fi
 
 EXPOSE 9000
 
