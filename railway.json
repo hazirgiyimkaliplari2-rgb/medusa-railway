@@ -5,6 +5,7 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
+    "startCommand": "./scripts/start.sh",
     "numReplicas": 1,
     "healthcheckPath": "/health",
     "healthcheckTimeout": 300,

@@ -16,10 +16,14 @@ RUN yarn install
 # Copy all source files
 COPY . .
 
+# Build admin panel during Docker build
+RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build || \
+    echo "Admin panel build failed during Docker build, will retry at runtime"
+
 # Make scripts executable
 RUN chmod +x scripts/start.sh
 
 EXPOSE 9000
 
 # Use the startup script that builds admin panel if needed
-CMD ["./scripts/start.sh"]
+ENTRYPOINT ["./scripts/start.sh"]
