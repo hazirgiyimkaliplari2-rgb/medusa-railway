@@ -16,10 +16,9 @@ RUN yarn install --frozen-lockfile
 # Copy all source files
 COPY . .
 
-# Build the application with admin panel
-RUN NODE_OPTIONS="--max-old-space-size=4096" yarn build && \
-    ls -la .medusa/server/public/admin/ && \
-    echo "Admin panel built successfully"
+# Make build script executable and run it
+RUN chmod +x scripts/docker-build.sh && \
+    NODE_OPTIONS="--max-old-space-size=4096" ./scripts/docker-build.sh
 
 # Runtime stage
 FROM node:20-alpine
