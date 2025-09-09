@@ -1,7 +1,7 @@
 FROM node:20-alpine
 
 # Install dependencies
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 make g++ bash
 
 # Set working directory
 WORKDIR /app
@@ -16,19 +16,19 @@ RUN yarn install
 # Copy application files
 COPY . .
 
-# Build the application (includes admin panel)
-RUN yarn build
+# Build the Medusa application and admin panel
+RUN npx medusa build
 
-# Run database migrations on container start
-# and then start the application
+# Verify build was successful
+RUN ls -la .medusa/server/public/admin/
+
+# Expose port
 EXPOSE 9000
 
 # Create a startup script
-RUN echo '#!/bin/sh' > /app/start.sh && \
-    echo 'echo "Running database migrations..."' >> /app/start.sh && \
-    echo 'npx medusa db:migrate' >> /app/start.sh && \
-    echo 'echo "Starting Medusa server..."' >> /app/start.sh && \
-    echo 'yarn start' >> /app/start.sh && \
+RUN echo '#!/bin/bash' > /app/start.sh && \
+    echo 'echo "Starting Medusa server with admin panel..."' >> /app/start.sh && \
+    echo 'exec yarn start' >> /app/start.sh && \
     chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]
