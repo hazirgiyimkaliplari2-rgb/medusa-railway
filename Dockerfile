@@ -19,8 +19,16 @@ COPY . .
 # Build the application (includes admin panel)
 RUN yarn build
 
-# Expose port
+# Run database migrations on container start
+# and then start the application
 EXPOSE 9000
 
-# Start the application (serves both API and admin panel)
-CMD ["yarn", "start"]
+# Create a startup script
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'echo "Running database migrations..."' >> /app/start.sh && \
+    echo 'npx medusa db:migrate' >> /app/start.sh && \
+    echo 'echo "Starting Medusa server..."' >> /app/start.sh && \
+    echo 'yarn start' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
