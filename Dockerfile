@@ -17,7 +17,7 @@ RUN yarn install
 COPY . .
 
 # Make scripts executable
-RUN chmod +x scripts/start.sh
+RUN chmod +x scripts/start.sh scripts/start-api-only.sh
 
 # Try to build admin panel during Docker build (may fail, will retry at runtime)
 RUN NODE_OPTIONS="--max-old-space-size=4096" npx medusa build || \
