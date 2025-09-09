@@ -1,26 +1,50 @@
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
-# Install dependencies
+# Install build dependencies
 RUN apk add --no-cache python3 make g++
 
-# Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 COPY yarn.lock ./
 
-# Install dependencies
-RUN yarn install
+# Install ALL dependencies (including devDependencies for build)
+RUN yarn install --frozen-lockfile
 
-# Copy application files
+# Copy all source files
 COPY . .
 
-# Build the application - both server and admin
-RUN NODE_ENV=production yarn build || npx medusa build || (echo "Build failed, trying with increased memory" && NODE_OPTIONS="--max-old-space-size=4096" npx medusa build)
+# Build the application with admin panel
+RUN NODE_OPTIONS="--max-old-space-size=4096" yarn build && \
+    ls -la .medusa/server/public/admin/ && \
+    echo "Admin panel built successfully"
 
-# Expose port
+# Runtime stage
+FROM node:20-alpine
+
+# Install runtime dependencies only
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY yarn.lock ./
+
+# Install production dependencies only
+RUN yarn install --production --frozen-lockfile
+
+# Copy application source
+COPY . .
+
+# Copy built files from builder stage
+COPY --from=builder /app/.medusa /app/.medusa
+
+# Verify admin panel exists
+RUN ls -la .medusa/server/public/admin/index.html
+
 EXPOSE 9000
 
-# Start command
 CMD ["yarn", "start"]
