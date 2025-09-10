@@ -14,10 +14,8 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
-  // Admin panel configuration
+  // Admin panel configuration - DISABLED for Railway deployment
   admin: {
-    disable: process.env.MEDUSA_ADMIN_DISABLED === "true" || false,
-    path: "app",
-    outDir: ".medusa/server/public",
+    disable: true, // Temporarily disabled to fix Railway deployment
   },
 })
